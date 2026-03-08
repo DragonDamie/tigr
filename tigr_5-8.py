@@ -4,6 +4,7 @@ from datetime import datetime
 import os
 import task_data
 import func
+import base64
 import streamlit.components.v1 as components
 #os.chdir(os.path.dirname(__file__))  # рабочая директория
 
@@ -163,9 +164,14 @@ elif st.session_state.current_step == 3:  # Основная часть зада
         # если задание новое — проигрываем аудио
         if st.session_state.last_audio != task5["audio"]:
 
+            with open(audio_path, "rb") as f:
+                audio_bytes = f.read()
+
+            audio_base64 = base64.b64encode(audio_bytes).decode()
+
             audio_html = f"""
             <audio controls autoplay>
-              <source src="{audio_path}" type="audio/mpeg">
+                <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
             </audio>
             """
 
