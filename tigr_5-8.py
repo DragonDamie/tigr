@@ -154,6 +154,8 @@ elif st.session_state.current_step == 3:  # Основная часть зада
         st.header("Задание 5")
         st.write("Выберите правильный глагол с опорой на предложение-образец")
         task5 = task_data.gender_easy[index]
+        audio_path = f"audio/task5/{task5['audio']}"
+        st.audio(audio_path)
 
         # Создаем HTML с новым дизайном
         html = create_task5_html(task5["prime_text"], task5["stimulus_text"], task5["hint"])
