@@ -4,6 +4,7 @@ from datetime import datetime
 import os
 import task_data
 import func
+import streamlit.components.v1 as components
 #os.chdir(os.path.dirname(__file__))  # рабочая директория
 
 
@@ -155,7 +156,22 @@ elif st.session_state.current_step == 3:  # Основная часть зада
         st.write("Выберите правильный глагол с опорой на предложение-образец")
         task5 = task_data.gender_easy[index]
         audio_path = f"audio/task5/{task5['audio']}"
-        st.audio(audio_path)
+        # проверяем новое ли задание
+        if "last_audio" not in st.session_state:
+            st.session_state.last_audio = None
+
+        # если задание новое — проигрываем аудио
+        if st.session_state.last_audio != task5["audio"]:
+
+            audio_html = f"""
+            <audio controls autoplay>
+              <source src="{audio_path}" type="audio/mpeg">
+            </audio>
+            """
+
+            components.html(audio_html, height=60)
+
+            st.session_state.last_audio = task5["audio"]
 
         # Создаем HTML с новым дизайном
         html = create_task5_html(task5["prime_text"], task5["stimulus_text"], task5["hint"])
