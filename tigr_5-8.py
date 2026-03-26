@@ -28,22 +28,22 @@ if st.session_state.current_step == 0:
         st.session_state.current_step = 1
         st.rerun()
 ############################################################################################################################################
-def create_task5_html(prime_text, stimulus_text, hint):
+def create_task5_html(prime_text, stimulus_text, hint, audio_base64):
     html = f"""
     <style>
         .container {{
             display: flex;
             flex-direction: column;
-            align-items: flex-start; /* Выравниваем по левому краю */
-            text-align: left; /* Текст по левому краю */
-            font-size: 1.2em; /* Увеличиваем шрифт */
+            align-items: flex-start;
+            text-align: left;
+            font-size: 1.2em;
         }}
         .example {{
             border: 2px solid #ccc;
             background-color: #f0f0f0;
             padding: 15px;
             margin: 10px 0;
-            color: #666; /* Серый цвет текста */
+            color: #666;
             width: 80%;
         }}
         .task {{
@@ -51,23 +51,54 @@ def create_task5_html(prime_text, stimulus_text, hint):
             background-color: #ffebcc;
             padding: 15px;
             margin: 10px 0;
-            color: black; /* Черный цвет текста */
+            color: black;
             width: 80%;
+            position: relative;
         }}
         .hint {{
             font-style: italic;
-            color: #666; /* Серый цвет текста */
+            color: #666;
+        }}
+        .audio-btn {{
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 22px;
+            cursor: pointer;
+            border: none;
+            background: none;
         }}
     </style>
+
     <div class="container">
         <div class="example">
             <strong>Образец:</strong> {prime_text}
         </div>
+
         <div class="task">
             {stimulus_text}
+            <button class="audio-btn" onclick="playAudio()">🔊</button>
             <div class="hint">{hint}</div>
         </div>
     </div>
+
+    <audio id="audio" autoplay>
+        <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
+    </audio>
+
+    <script>
+        function playAudio() {{
+            var audio = document.getElementById("audio");
+            audio.currentTime = 0;
+            audio.play();
+        }}
+
+        // автоплей при загрузке
+        window.onload = function() {{
+            var audio = document.getElementById("audio");
+            audio.play().catch(() => {{}});
+        }}
+    </script>
     """
     return html
 
@@ -169,18 +200,15 @@ elif st.session_state.current_step == 3:  # Основная часть зада
 
             audio_base64 = base64.b64encode(audio_bytes).decode()
 
-            audio_html = f"""
-            <audio controls autoplay>
-                <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
-            </audio>
-            """
-
-            components.html(audio_html, height=60)
-
             st.session_state.last_audio = task5["audio"]
 
         # Создаем HTML с новым дизайном
-        html = create_task5_html(task5["prime_text"], task5["stimulus_text"], task5["hint"])
+        html = create_task5_html(
+            task5["prime_text"],
+            task5["stimulus_text"],
+            task5["hint"],
+            audio_base64
+        )
         st.components.v1.html(html, height=300)
 
         # Стилизация кнопок
