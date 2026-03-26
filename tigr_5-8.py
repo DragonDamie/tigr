@@ -30,28 +30,44 @@ if st.session_state.current_step == 0:
 ############################################################################################################################################
 def create_task5_html(prime_text, stimulus_text, hint, audio_base64=None, audio_answers=None, answers=None):
     
-    answers_html = ""
+answers_html = ""
 
-    if answers and audio_answers:
-        for i, (ans, audio) in enumerate(zip(answers, audio_answers)):
-            answers_html += f"""
-            <button onclick="playAnswerAudio({i})" style="
-                background-color:#ffebcc;
-                border:2px solid orange;
-                padding:10px;
-                width:80%;
-                margin:5px 0;
-                text-align:left;
-                font-size:1.2em;
-                cursor:pointer;
-            ">
-                🔊 {ans}
+if answers and audio_answers:
+    for i, (ans, audio) in enumerate(zip(answers, audio_answers)):
+        answers_html += f"""
+        <div style="
+            position:relative;
+            background-color:#ffebcc;
+            border:2px solid orange;
+            padding:15px;
+            width:80%;
+            margin:5px 0;
+            font-size:1.2em;
+            cursor:pointer;
+        " onclick="selectAnswer('{ans}')">
+
+            <div>{ans}</div>
+
+            <button onclick="event.stopPropagation(); playAnswerAudio({i})"
+                style="
+                    position:absolute;
+                    top:8px;
+                    right:8px;
+                    font-size:18px;
+                    border:none;
+                    background:white;
+                    border-radius:6px;
+                    cursor:pointer;
+                    padding:3px 6px;
+                ">
+                🔊
             </button>
 
             <audio id="audio_answer_{i}">
                 <source src="data:audio/mp3;base64,{audio}" type="audio/mp3">
             </audio>
-            """
+        </div>
+        """
 
     html = f"""
     <style>
@@ -131,6 +147,9 @@ def create_task5_html(prime_text, stimulus_text, hint, audio_base64=None, audio_
             var audio = document.getElementById("audio");
             audio.play().catch(() => {{}});
         }}
+        function selectAnswer(answer) {
+    console.log("Selected:", answer);
+}
     </script>
     """
 
