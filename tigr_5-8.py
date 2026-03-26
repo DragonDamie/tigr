@@ -28,7 +28,7 @@ if st.session_state.current_step == 0:
         st.session_state.current_step = 1
         st.rerun()
 ############################################################################################################################################
-def create_task5_html(prime_text, stimulus_text, hint, audio_base64=None):
+def create_task5_html(prime_text, stimulus_text, hint, audio_base64=None, audio_answers=None, answers=None):
     html = f"""
     <style>
         .container {{
@@ -82,6 +82,10 @@ def create_task5_html(prime_text, stimulus_text, hint, audio_base64=None):
         </div>
     </div>
 
+    <div>
+        {answers_html}
+    </div>
+
     <audio id="audio" autoplay>
         <source src="data:audio/mp3;base64,{audio_base64 or ''}" type="audio/mp3">
     </audio>
@@ -92,6 +96,11 @@ def create_task5_html(prime_text, stimulus_text, hint, audio_base64=None):
             audio.currentTime = 0;
             audio.play();
         }}
+        function playAnswerAudio(index) {
+            var audio = document.getElementById("audio_answer_" + index);
+            audio.currentTime = 0;
+            audio.play();
+        }
 
         // автоплей при загрузке
         window.onload = function() {{
@@ -100,6 +109,28 @@ def create_task5_html(prime_text, stimulus_text, hint, audio_base64=None):
         }}
     </script>
     """
+    answers_html = ""
+
+if answers and audio_answers:
+    for i, (ans, audio) in enumerate(zip(answers, audio_answers)):
+        answers_html += f"""
+        <button onclick="playAnswerAudio({i})" style="
+            background-color:#ffebcc;
+            border:2px solid orange;
+            padding:10px;
+            width:80%;
+            margin:5px 0;
+            text-align:left;
+            font-size:1.2em;
+            cursor:pointer;
+        ">
+            🔊 {ans}
+        </button>
+
+        <audio id="audio_answer_{i}">
+            <source src="data:audio/mp3;base64,{audio}" type="audio/mp3">
+        </audio>
+        """
     return html
 
 # Основной код для задания 5
@@ -208,13 +239,21 @@ elif st.session_state.current_step == 3:  # Основная часть зада
             st.session_state.last_audio = task5["audio"]
 
         audio_base64 = st.session_state.audio_base64
+        audio_answers_base64 = []
+
+        for audio_file in task5.get("audio_answers", []):
+            path = f"audio/task5/{audio_file}"
+            with open(path, "rb") as f:
+                audio_answers_base64.append(base64.b64encode(f.read()).decode())
         
         # Создаем HTML с новым дизайном
         html = create_task5_html(
             task5["prime_text"],
             task5["stimulus_text"],
             task5["hint"],
-            audio_base64
+            audio_base64,
+            audio_answers_base64,
+            task5["answers"]
         )
         st.components.v1.html(html, height=300)
 
