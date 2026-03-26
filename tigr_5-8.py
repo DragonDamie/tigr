@@ -28,7 +28,7 @@ if st.session_state.current_step == 0:
         st.session_state.current_step = 1
         st.rerun()
 ############################################################################################################################################
-def create_task5_html(prime_text, stimulus_text, hint, audio_base64):
+def create_task5_html(prime_text, stimulus_text, hint, audio_base64=None):
     html = f"""
     <style>
         .container {{
@@ -83,7 +83,7 @@ def create_task5_html(prime_text, stimulus_text, hint, audio_base64):
     </div>
 
     <audio id="audio" autoplay>
-        <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
+        <source src="data:audio/mp3;base64,{audio_base64 or ''}" type="audio/mp3">
     </audio>
 
     <script>
