@@ -193,15 +193,19 @@ elif st.session_state.current_step == 3:  # Основная часть зада
             st.session_state.last_audio = None
 
         # если задание новое — проигрываем аудио
+        if "audio_base64" not in st.session_state:
+            st.session_state.audio_base64 = None
+
         if st.session_state.last_audio != task5["audio"]:
 
             with open(audio_path, "rb") as f:
                 audio_bytes = f.read()
 
-            audio_base64 = base64.b64encode(audio_bytes).decode()
-
+            st.session_state.audio_base64 = base64.b64encode(audio_bytes).decode()
             st.session_state.last_audio = task5["audio"]
 
+        audio_base64 = st.session_state.audio_base64
+        
         # Создаем HTML с новым дизайном
         html = create_task5_html(
             task5["prime_text"],
