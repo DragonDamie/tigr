@@ -227,8 +227,11 @@ elif st.session_state.current_step == 3:  # Основная часть зада
                     border: 2px solid orange;
                     padding: 10px;
                     border-radius: 5px;
-                    width: 80%;
-                    text-align: left; /* Текст по левому краю */
+
+                    width: 100%;
+                    white-space: nowrap;
+
+                    text-align: left;
                     cursor: pointer;
                     margin: 5px 0;
                     font-size: 1.2em;
