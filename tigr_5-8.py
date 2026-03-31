@@ -147,9 +147,9 @@ def create_task5_html(prime_text, stimulus_text, hint, audio_base64=None, audio_
             var audio = document.getElementById("audio");
             audio.play().catch(() => {{}});
         }}
-        function selectAnswer(answer) {
+        function selectAnswer(answer) {{
     console.log("Selected:", answer);
-}
+}}
     </script>
     """
 
