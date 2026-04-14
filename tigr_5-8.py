@@ -518,8 +518,8 @@ elif st.session_state.current_step == 8:
                     border: 2px solid orange;
                     padding: 10px;
                     border-radius: 5px;
-                    width: fit-content;
-                    width: 80%;
+                    width: auto;
+                    display: inline-block;
                     text-align: left;
                     cursor: pointer;
                     margin: 5px 0;
@@ -573,8 +573,8 @@ elif st.session_state.current_step == 9:
                     border: 2px solid orange;
                     padding: 10px;
                     border-radius: 5px;
-                    width: fit-content;
-                    width: 80%;
+                    width: auto;
+                    display: inline-block;
                     text-align: left;
                     cursor: pointer;
                     margin: 5px 0;
