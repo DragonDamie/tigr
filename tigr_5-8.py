@@ -367,13 +367,19 @@ elif st.session_state.current_step == 5:  # Тренировочные стим�
         st.write("Картинки:")
         col1, col2, col3 = st.columns(3)
         with col1:
-            st.image(f"images/{image_names[0]}", use_container_width=True, width=300)
+            st.image(f"images/{image_names[0]}", use_container_width=True)
+        with col2:
+            st.image(f"images/{image_names[1]}", use_container_width=True)
+        with col3:
+            st.image(f"images/{image_names[2]}", use_container_width=True)
+
+        col1, col2, col3 = st.columns(3)
+        index_answrs = []
+        with col1:
             index_answrs.append(st.selectbox("Выберите глагол:", verbs, key=f"verb_1_{index}"))
         with col2:
-            st.image(f"images/{image_names[1]}", use_container_width=True, width=300)
             index_answrs.append(st.selectbox("Выберите глагол:", verbs, key=f"verb_2_{index}"))
         with col3:
-            st.image(f"images/{image_names[2]}", use_container_width=True, width=300)
             index_answrs.append(st.selectbox("Выберите глагол:", verbs, key=f"verb_3_{index}"))
 
         if st.button("Далее"):
