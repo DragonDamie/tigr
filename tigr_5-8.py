@@ -523,6 +523,7 @@ elif st.session_state.current_step == 8:
                     cursor: pointer;
                     margin: 5px 0;
                     font-size: 1.2em;
+                    white-space: nowrap;
                 }
                 .stButton > button:hover {
                     background-color: #ffd699;
@@ -573,6 +574,7 @@ elif st.session_state.current_step == 9:
                     cursor: pointer;
                     margin: 5px 0;
                     font-size: 1.2em;
+                    white-space: nowrap;
                 }
                 .stButton > button:hover {
                     background-color: #ffd699;
