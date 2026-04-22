@@ -7,7 +7,14 @@ import func
 import base64
 import streamlit.components.v1 as components
 #os.chdir(os.path.dirname(__file__))  # рабочая директория
+import random
 
+def shuffle_once(key, data):
+    if key not in st.session_state:
+        shuffled = data.copy()
+        random.shuffle(shuffled)
+        st.session_state[key] = shuffled
+    return st.session_state[key]
 
 # Инициализация состояния страницы
 if "current_step" not in st.session_state:
@@ -154,7 +161,9 @@ def create_task5_html(prime_text, stimulus_text, hint, audio_base64=None, audio_
     """
 
     return html
-    
+
+task_data.gender_easy_test = shuffle_once("rnd_5_test", task_data.gender_easy_test)
+task_data.gender_easy = shuffle_once("rnd_5_main", task_data.gender_easy)
 # Основной код для задания 5
 if st.session_state.current_step == 1:  # Инструкция
     st.header("Задание 4.1")
@@ -325,6 +334,19 @@ elif st.session_state.current_step == 3:  # Основная часть зада
 
 ############################################################################################################################################
 # Основной код для задания 6
+
+task_data.gender_middle_minus_test = shuffle_once(
+    "rnd_6_test_img",
+    list(zip(task_data.gender_middle_minus_test, task_data.gender_middle_minus_opt_test))
+)
+task_data.gender_middle_minus = shuffle_once(
+    "rnd_6_main_img",
+    list(zip(task_data.gender_middle_minus, task_data.gender_middle_minus_opt))
+)
+
+task_data.gender_middle_minus_test, task_data.gender_middle_minus_opt_test = zip(*task_data.gender_middle_minus_test)
+task_data.gender_middle_minus, task_data.gender_middle_minus_opt = zip(*task_data.gender_middle_minus)
+
 if st.session_state.current_step == 4:  # Инструкция
     st.header("Задание 4.2")
 
@@ -470,7 +492,17 @@ def create_task7_html(stimulus_text):
     </div>
     """
     return html
+task_data.gender_middle_plus_test = shuffle_once(
+    "rnd_7_test",
+    list(zip(task_data.gender_middle_plus_test, task_data.gender_middle_plus_opt_test))
+)
+task_data.gender_middle_plus = shuffle_once(
+    "rnd_7_main",
+    list(zip(task_data.gender_middle_plus, task_data.gender_middle_plus_opt))
+)
 
+task_data.gender_middle_plus_test, task_data.gender_middle_plus_opt_test = zip(*task_data.gender_middle_plus_test)
+task_data.gender_middle_plus, task_data.gender_middle_plus_opt = zip(*task_data.gender_middle_plus)
 # Основной код для задания 7
 if st.session_state.current_step == 7:
     st.header("Задание 4.3")
@@ -639,7 +671,8 @@ def create_task8_html(stimulus_text):
     </div>
     """
     return html
-
+task_data.gender_complex_test = shuffle_once("rnd_8_test", task_data.gender_complex_test)
+task_data.gender_complex = shuffle_once("rnd_8_main", task_data.gender_complex)
 # Основной код для задания 8
 if st.session_state.current_step == 10:
     st.header("Задание 4.4")
