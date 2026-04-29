@@ -288,10 +288,12 @@ def transliterate(text):
         result += mapping.get(char, char)
     return result
 
-def create_task6_audio_buttons(verbs, col_key, component_key):
-    """Создает HTML с кнопками: radio слева, текст глагола, кнопка проигрывания справа"""
+def create_task6_audio_buttons(verbs, col_key, radio_key):
+    """Создает выбор ответа с кнопками проигрывания аудио"""
     
+    # Создаем HTML с аудио-кнопками
     buttons_html = ""
+    script_functions = ""
     
     for i, verb in enumerate(verbs):
         audio_filename = transliterate(verb) + '.mp3'
@@ -303,105 +305,55 @@ def create_task6_audio_buttons(verbs, col_key, component_key):
                 audio_base64 = base64.b64encode(f.read()).decode()
         
         buttons_html += f"""
-        <div onclick="selectOption('{col_key}', {i}, '{verb}')" 
-             id="wrapper_{col_key}_{i}"
-             style="
-                display:flex;
-                align-items:center;
-                padding:10px;
-                margin:5px 0;
-                border:2px solid #ccc;
+        <button onclick="playAudio_{col_key}_{i}()"
+            style="
+                font-size:16px;
+                border:2px solid orange;
+                background:#ffebcc;
                 border-radius:8px;
                 cursor:pointer;
-                background:#f0f0f0;
+                padding:10px 15px;
+                margin:5px 0;
                 width:100%;
-             ">
-            <div id="radio_{col_key}_{i}" style="
-                width:20px;
-                height:20px;
-                border:2px solid #999;
-                border-radius:50%;
-                margin-right:10px;
-                flex-shrink:0;
-            "></div>
-            <span style="flex-grow:1; font-size:16px;">{verb}</span>
-            <button onclick="event.stopPropagation(); playAudio_{col_key}_{i}()" 
-                style="
-                    font-size:18px;
-                    border:none;
-                    background:white;
-                    border-radius:6px;
-                    cursor:pointer;
-                    padding:5px 10px;
-                    flex-shrink:0;
-                ">
-                🔊
-            </button>
-        </div>
+                text-align:left;
+            ">
+            🔊 {verb}
+        </button>
         <audio id="audio_{col_key}_{i}">
             <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
         </audio>
         """
+        
+        script_functions += f"""
+        function playAudio_{col_key}_{i}() {{
+            var audio = document.getElementById("audio_{col_key}_{i}");
+            audio.currentTime = 0;
+            audio.play();
+        }}
+        """
     
     html = f"""
-    <style>
-        .radio-selected {{
-            background: orange !important;
-            border-color: orange !important;
-        }}
-        .wrapper-selected {{
-            background: #ffebcc !important;
-            border-color: orange !important;
-        }}
-    </style>
     <div style="margin-top:5px;">
         {buttons_html}
     </div>
     <script>
-        var selected_{col_key} = null;
-        var selectedVerb_{col_key} = null;
-        
-        function selectOption(colKey, index, verb) {{
-            // Снимаем выделение со всех
-            var wrappers = document.querySelectorAll('[id^="wrapper_" + colKey + "_"]');
-            wrappers.forEach(function(w) {{
-                w.classList.remove('wrapper-selected');
-            }});
-            var radios = document.querySelectorAll('[id^="radio_" + colKey + "_"]');
-            radios.forEach(function(r) {{
-                r.classList.remove('radio-selected');
-            }});
-            
-            // Выделяем выбранный
-            document.getElementById("wrapper_" + colKey + "_" + index).classList.add('wrapper-selected');
-            document.getElementById("radio_" + colKey + "_" + index).classList.add('radio-selected');
-            
-            selected_{col_key} = index;
-            selectedVerb_{col_key} = verb;
-        }}
-        
-        function playAudio_{col_key}_idx(index) {{
-            var audio = document.getElementById("audio_" + colKey + "_" + index);
-            audio.currentTime = 0;
-            audio.play();
-        }}
+        {script_functions}
     </script>
     """
     
-    # Динамически добавляем функции для каждой кнопки
-    for i in range(len(verbs)):
-        html += f"""
-    <script>
-        function playAudio_{col_key}_{i}() {{
-            playAudio_{col_key}_idx({i});
-        }}
-    </script>
-        """
+    st.components.v1.html(html, height=len(verbs)*55+15)
     
-    # Возвращаем компонент
-    component_value = st.components.v1.html(html, height=len(verbs)*60+20)
+    # Radio для выбора ответа
+    choice = st.radio(
+        "Выберите глагол:",
+        verbs,
+        key=radio_key,
+        index=None,
+        horizontal=False,
+        label_visibility="collapsed"
+    )
     
-    return component_value
+    return choice
 
 
 # Основной код для задания 6
@@ -479,7 +431,7 @@ elif st.session_state.current_step == 6:
     answ_co = len(task_data.gender_middle_minus)
     if index < answ_co:
         st.header("Задание 4.2")
-        st.write("Нажмите на строку с глаголом, чтобы выбрать ответ. Нажмите 🔊 чтобы прослушать.")
+        st.write("Нажмите 🔊 чтобы прослушать глагол. Выберите правильный ответ в кружочках ниже.")
         
         image_names = task_data.gender_middle_minus[index]
         verbs = task_data.gender_middle_minus_opt[index]
@@ -489,18 +441,18 @@ elif st.session_state.current_step == 6:
         
         with col1:
             st.image(f"images/{image_names[0]}", use_container_width=True)
-            answer1 = create_task6_audio_buttons(verbs, "col1", f"comp1_{index}")
+            answer1 = create_task6_audio_buttons(verbs, "col1", f"verb_1_{index}")
             
         with col2:
             st.image(f"images/{image_names[1]}", use_container_width=True)
-            answer2 = create_task6_audio_buttons(verbs, "col2", f"comp2_{index}")
+            answer2 = create_task6_audio_buttons(verbs, "col2", f"verb_2_{index}")
             
         with col3:
             st.image(f"images/{image_names[2]}", use_container_width=True)
-            answer3 = create_task6_audio_buttons(verbs, "col3", f"comp3_{index}")
+            answer3 = create_task6_audio_buttons(verbs, "col3", f"verb_3_{index}")
 
         if st.button("Далее"):
-            if answer1 and answer2 and answer3:
+            if answer1 is not None and answer2 is not None and answer3 is not None:
                 st.session_state.responses[f"Задание 6: Картина {image_names[0]}"] = answer1
                 st.session_state.responses[f"Задание 6: Картина {image_names[1]}"] = answer2
                 st.session_state.responses[f"Задание 6: Картина {image_names[2]}"] = answer3
