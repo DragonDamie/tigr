@@ -1747,7 +1747,7 @@ gender_easy = [
     {
         "prime_text": "Ученики читали стихи",
         "stimulus_text": "Каждый выходной мы __ очень поздно",
-        "answers": ('вставали' 'вставал'),
+        "answers": ('вставали', 'вставал'),
         "audio_answers": ('vstavali.mp3', 'vstaval.mp3'),
         "hint": "Что делали?",
         "audio": "4_1_1_142.mp3",
