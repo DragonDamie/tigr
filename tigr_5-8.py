@@ -317,7 +317,7 @@ def create_task6_audio_buttons(verbs, col_key, radio_key):
                 width:100%;
                 text-align:left;
             ">
-            <span style="font-size:24px;">🔊 {verb}</span>
+            <span style="font-size:20px;">🔊 {verb}</span>
         </button>
         <audio id="audio_{col_key}_{i}">
             <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
