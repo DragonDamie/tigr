@@ -45,6 +45,7 @@ def create_task5_html(prime_text, stimulus_text, hint, audio_base64=None, audio_
                 margin:5px 0;
                 font-size:1.2em;
             ">
+                <div style="margin-right:40px;">{ans}</div>
                 <button onclick="event.stopPropagation(); playAnswerAudio({i})"
                     style="
                         position:absolute;
