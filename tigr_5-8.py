@@ -344,6 +344,7 @@ elif st.session_state.current_step == 3:  # Основная часть зада
 
     else:
         st.header("Задание 4.1 завершено!")
+        func.save_result(st)
         if st.button("Перейти к следующему заданию"):
             st.session_state.current_step = 4
             st.rerun()
@@ -634,6 +635,7 @@ elif st.session_state.current_step == 6:
 
     else:
         st.header("Задание 4.2 завершено!")
+        func.save_result(st)
         if st.button("Перейти к следующему заданию"):
             st.session_state.current_step = 7
             st.rerun()
@@ -813,6 +815,7 @@ elif st.session_state.current_step == 9:
     
     else:
         st.header("Задание 4.3 завершено!")
+        func.save_result(st)
         if st.button("Перейти к следующему заданию"):
             st.session_state.current_step = 10
             st.rerun()
