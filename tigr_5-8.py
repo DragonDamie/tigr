@@ -302,8 +302,9 @@ elif st.session_state.current_step == 3:  # Основная часть зада
 
         audio_base64 = st.session_state.audio_base64
         audio_answers_base64 = []
-
-        for audio_file in task5.get("audio_answers", []):
+        audio_files_list = task5.get("audio_answers", [])
+        
+        for audio_file in audio_files_list:
             path = f"audio/task5/{audio_file}"
             if os.path.exists(path):
                 with open(path, "rb") as f:
@@ -311,23 +312,25 @@ elif st.session_state.current_step == 3:  # Основная часть зада
             else:
                 audio_answers_base64.append("")
         
+        # Перемешиваем ответы и аудио синхронно
+        answers_list = list(task5["answers"])
+        paired = list(zip(answers_list, audio_answers_base64))
+        random.shuffle(paired)
+        shuffled_answers, shuffled_audio = zip(*paired) if paired else ([], [])
+        
         html = create_task5_html(
             task5["prime_text"],
             task5["stimulus_text"],
             task5["hint"],
             audio_base64,
-            audio_answers_base64,
-            task5["answers"]
+            list(shuffled_audio),
+            list(shuffled_answers)
         )
         st.components.v1.html(html, height=400)
 
-        # Перемешиваем варианты ответов
-        answers_list = list(task5["answers"])
-        random.shuffle(answers_list)
-        
         choice = st.radio(
             "Выберите ответ:",
-            answers_list,
+            list(shuffled_answers),
             key=f"q5_radio_{index}",
             index=None,
             horizontal=True
