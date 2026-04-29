@@ -307,7 +307,7 @@ def create_task6_audio_buttons(verbs, col_key, radio_key):
         buttons_html += f"""
         <button onclick="playAudio_{col_key}_{i}()"
             style="
-                font-size:16px;
+                font-size:20px;
                 border:2px solid orange;
                 background:#ffebcc;
                 border-radius:8px;
@@ -398,6 +398,12 @@ elif st.session_state.current_step == 5:  # Тренировочные стим�
                     object-fit: contain !important;
                     width: 100% !important;
                 }
+                .stRadio label {
+                    font-size: 22px !important;
+                }
+                button {
+                    font-size: 18px !important;
+                }
             </style>
         """, unsafe_allow_html=True)
         
@@ -449,6 +455,12 @@ elif st.session_state.current_step == 6:
                     height: 200px !important;
                     object-fit: contain !important;
                     width: 100% !important;
+                }
+                .stRadio label {
+                    font-size: 22px !important;
+                }
+                button {
+                    font-size: 18px !important;
                 }
             </style>
         """, unsafe_allow_html=True)
