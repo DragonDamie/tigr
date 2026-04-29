@@ -274,6 +274,75 @@ elif st.session_state.current_step == 3:  # Основная часть зада
             st.rerun()
 
 ############################################################################################################################################
+def transliterate(text):
+    """Транслитерация русского текста для поиска аудиофайлов"""
+    mapping = {
+        'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo',
+        'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm',
+        'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u',
+        'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'sch',
+        'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
+    }
+    result = ''
+    for char in text.lower():
+        result += mapping.get(char, char)
+    return result
+
+def create_task6_audio_buttons(verbs, col_key):
+    """Создает HTML с кнопками для проигрывания вариантов ответов"""
+    buttons_html = ""
+    script_functions = ""
+    
+    for i, verb in enumerate(verbs):
+        audio_filename = transliterate(verb) + '.mp3'
+        audio_path = f"audio/task6/{audio_filename}"
+        audio_base64 = ""
+        
+        if os.path.exists(audio_path):
+            with open(audio_path, "rb") as f:
+                audio_base64 = base64.b64encode(f.read()).decode()
+        
+        buttons_html += f"""
+        <button onclick="playAudio_{col_key}_{i}()"
+            style="
+                font-size:14px;
+                border:none;
+                background:#ffebcc;
+                border:2px solid orange;
+                border-radius:6px;
+                cursor:pointer;
+                padding:5px 8px;
+                margin:3px 0;
+                width:100%;
+                text-align:left;
+            ">
+            🔊 {verb}
+        </button>
+        <audio id="audio_{col_key}_{i}">
+            <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
+        </audio>
+        """
+        
+        script_functions += f"""
+        function playAudio_{col_key}_{i}() {{
+            var audio = document.getElementById("audio_{col_key}_{i}");
+            audio.currentTime = 0;
+            audio.play();
+        }}
+        """
+    
+    html = f"""
+    <div style="margin-top:5px;">
+        {buttons_html}
+    </div>
+    <script>
+        {script_functions}
+    </script>
+    """
+    
+    return html
+
+
 # Основной код для задания 6
 if st.session_state.current_step == 4:  # Инструкция
     st.header("Задание 4.2")
@@ -344,17 +413,16 @@ elif st.session_state.current_step == 5:  # Тренировочные стим�
             st.session_state.current_step = 6
             st.rerun()
 
-elif st.session_state.current_step == 6:  # Основная часть задания 6
+elif st.session_state.current_step == 6:
     index = int(len([k for k in st.session_state.responses.keys() if k.startswith("Задание 6")]) / 3)
     answ_co = len(task_data.gender_middle_minus)
     if index < answ_co:
         st.header("Задание 4.2")
         st.write("Соедините картинки с правильной формой глагола")
         
-        # Основные данные
         image_names = task_data.gender_middle_minus[index]
         verbs = task_data.gender_middle_minus_opt[index]
-        verbs = [v for v in verbs if v != ""]  # ДОБАВИТЬ ЭТУ СТРОКУ
+        verbs = [v for v in verbs if v != ""]
 
         st.write("Картинки:")
         col1, col2, col3 = st.columns(3)
@@ -368,16 +436,22 @@ elif st.session_state.current_step == 6:  # Основная часть зада
         col1, col2, col3 = st.columns(3)
 
         with col1:
-            answer1 = st.radio("Выберите глагол:", verbs, key=f"verb_1_{index}", index=None)
+            html1 = create_task6_audio_buttons(verbs, "col1")
+            st.components.v1.html(html1, height=len(verbs)*40+10)
+            answer1 = st.radio("Выберите глагол:", verbs, key=f"verb_1_{index}", index=None, label_visibility="collapsed")
+        
         with col2:
-            answer2 = st.radio("Выберите глагол:", verbs, key=f"verb_2_{index}", index=None)
+            html2 = create_task6_audio_buttons(verbs, "col2")
+            st.components.v1.html(html2, height=len(verbs)*40+10)
+            answer2 = st.radio("Выберите глагол:", verbs, key=f"verb_2_{index}", index=None, label_visibility="collapsed")
+        
         with col3:
-            answer3 = st.radio("Выберите глагол:", verbs, key=f"verb_3_{index}", index=None)
+            html3 = create_task6_audio_buttons(verbs, "col3")
+            st.components.v1.html(html3, height=len(verbs)*40+10)
+            answer3 = st.radio("Выберите глагол:", verbs, key=f"verb_3_{index}", index=None, label_visibility="collapsed")
 
         if st.button("Далее"):
-            # Проверяем, выбраны ли все глаголы
             if answer1 is not None and answer2 is not None and answer3 is not None:
-                # Сохраняем ответы
                 st.session_state.responses[f"Задание 6: Картина {image_names[0]}"] = answer1
                 st.session_state.responses[f"Задание 6: Картина {image_names[1]}"] = answer2
                 st.session_state.responses[f"Задание 6: Картина {image_names[2]}"] = answer3
