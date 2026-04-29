@@ -980,7 +980,7 @@ gender_easy = [
         "prime_text": "Бабушка посадила цветы",
         "stimulus_text": "Бабушка упала, когда __ дорогу",
         "answers": ('переходила', 'переходил'),
-        "audio_answers": ('perehodila.mp3', 'perehodil.mp3'),
+        "audio_answers": ('perekhodila.mp3', 'perekhodil.mp3'),
         "hint": "Что делала?",
         "audio": "4_1_1_46.mp3",
     },
