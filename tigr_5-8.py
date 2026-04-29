@@ -3,6 +3,8 @@ import streamlit as st
 from datetime import datetime
 import os
 import task_data
+import importlib
+importlib.reload(task_data)
 import func
 import base64
 import streamlit.components.v1 as components
@@ -86,15 +88,6 @@ if "gender_complex_selected" not in st.session_state:
     st.session_state.gender_complex_selected = [task_data.gender_complex[i] for i in indices[:40]]
 
 
-if st.button("🔄 Сбросить задание 4.4"):
-    st.session_state.responses = {k: v for k, v in st.session_state.responses.items() if not k.startswith("Задание 8")}
-    indices = list(range(len(task_data.gender_complex)))
-    random.shuffle(indices)
-    st.session_state.gender_complex_selected = [task_data.gender_complex[i] for i in indices[:40]]
-    st.session_state.current_step = 12
-    st.rerun()
-
-    
 st.title("ТИГР: тренируемся изучать грамматику")
 
 if st.session_state.current_step == 0:
