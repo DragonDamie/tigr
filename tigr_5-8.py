@@ -84,6 +84,14 @@ if "gender_complex_selected" not in st.session_state:
     indices = list(range(len(task_data.gender_complex)))
     random.shuffle(indices)
     st.session_state.gender_complex_selected = [task_data.gender_complex[i] for i in indices[:40]]
+
+
+# Кнопка сброса задания 4.4
+if st.button("🔄 Сбросить задание 4.4"):
+    st.session_state.responses = {k: v for k, v in st.session_state.responses.items() if not k.startswith("Задание 8")}
+    if "gender_complex_selected" in st.session_state:
+        del st.session_state.gender_complex_selected
+    st.rerun()
     
 st.title("ТИГР: тренируемся изучать грамматику")
 
