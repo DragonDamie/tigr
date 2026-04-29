@@ -6,6 +6,7 @@ import task_data
 import func
 import base64
 import streamlit.components.v1 as components
+import hashlib
 #os.chdir(os.path.dirname(__file__))  # рабочая директория
 
 
@@ -43,8 +44,7 @@ def create_task5_html(prime_text, stimulus_text, hint, audio_base64=None, audio_
                 width:80%;
                 margin:5px 0;
                 font-size:1.2em;
-                cursor:pointer;
-            " onclick="selectAnswer('{ans}')">
+                cursor:pointer; >
 
                 <div>{ans}</div>
 
@@ -222,9 +222,10 @@ elif st.session_state.current_step == 2:  # Тренировочные стим�
 
         # Варианты ответов в виде кнопок
         choice = None
-        for answer in task5_test["answers"]:
-            if st.button(answer, key=f"q5_test_{index}_{answer}"):
-                choice = answer
+        for i, answer in enumerate(task5_test["answers"]):
+            unique_id = hashlib.md5(f"test_{index}_{i}_{answer}".encode()).hexdigest()[:8]
+        if st.button(answer, key=f"q5_test_{index}_{i}_{unique_id}"):
+            choice = answer
 
         if choice is not None:
             st.session_state.task5_test_index += 1  # Переход к следующему стимулу
@@ -307,9 +308,10 @@ elif st.session_state.current_step == 3:  # Основная часть зада
 
         # Варианты ответов в виде кнопок
         choice = None
-        for answer in task5["answers"]:
-            if st.button(answer, key=f"q5_{index}_{answer}"):
-                choice = answer
+        for i, answer in enumerate(task5["answers"]):
+            unique_id = hashlib.md5(f"{index}_{i}_{answer}_{task5['stimulus_text']}".encode()).hexdigest()[:8]
+        if st.button(answer, key=f"q5_{index}_{i}_{unique_id}"):
+            choice = answer
 
         if choice is not None:
             st.session_state.responses[f"Задание 5: {task5['stimulus_text']}"] = choice
