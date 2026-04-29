@@ -306,12 +306,11 @@ def create_task6_audio_buttons(verbs, col_key):
         <button onclick="playAudio_{col_key}_{i}()"
             style="
                 font-size:14px;
-                border:none;
-                background:#ffebcc;
-                border:2px solid orange;
+                border:2px solid #ccc;
+                background:#f0f0f0;
                 border-radius:6px;
                 cursor:pointer;
-                padding:5px 8px;
+                padding:8px 12px;
                 margin:3px 0;
                 width:100%;
                 text-align:left;
@@ -418,37 +417,31 @@ elif st.session_state.current_step == 6:
     answ_co = len(task_data.gender_middle_minus)
     if index < answ_co:
         st.header("Задание 4.2")
-        st.write("Соедините картинки с правильной формой глагола")
+        st.write("Нажмите на кнопку с глаголом, чтобы прослушать, и выберите ответ ниже.")
         
         image_names = task_data.gender_middle_minus[index]
         verbs = task_data.gender_middle_minus_opt[index]
         verbs = [v for v in verbs if v != ""]
 
-        st.write("Картинки:")
         col1, col2, col3 = st.columns(3)
+        
         with col1:
             st.image(f"images/{image_names[0]}", use_container_width=True)
+            html1 = create_task6_audio_buttons(verbs, "col1")
+            st.components.v1.html(html1, height=len(verbs)*45+10)
+            answer1 = st.radio("Выберите глагол:", verbs, key=f"verb_1_{index}", index=None)
+            
         with col2:
             st.image(f"images/{image_names[1]}", use_container_width=True)
+            html2 = create_task6_audio_buttons(verbs, "col2")
+            st.components.v1.html(html2, height=len(verbs)*45+10)
+            answer2 = st.radio("Выберите глагол:", verbs, key=f"verb_2_{index}", index=None)
+            
         with col3:
             st.image(f"images/{image_names[2]}", use_container_width=True)
-            
-        col1, col2, col3 = st.columns(3)
-
-        with col1:
-            html1 = create_task6_audio_buttons(verbs, "col1")
-            st.components.v1.html(html1, height=len(verbs)*40+10)
-            answer1 = st.radio("Выберите глагол:", verbs, key=f"verb_1_{index}", index=None, label_visibility="collapsed")
-        
-        with col2:
-            html2 = create_task6_audio_buttons(verbs, "col2")
-            st.components.v1.html(html2, height=len(verbs)*40+10)
-            answer2 = st.radio("Выберите глагол:", verbs, key=f"verb_2_{index}", index=None, label_visibility="collapsed")
-        
-        with col3:
             html3 = create_task6_audio_buttons(verbs, "col3")
-            st.components.v1.html(html3, height=len(verbs)*40+10)
-            answer3 = st.radio("Выберите глагол:", verbs, key=f"verb_3_{index}", index=None, label_visibility="collapsed")
+            st.components.v1.html(html3, height=len(verbs)*45+10)
+            answer3 = st.radio("Выберите глагол:", verbs, key=f"verb_3_{index}", index=None)
 
         if st.button("Далее"):
             if answer1 is not None and answer2 is not None and answer3 is not None:
@@ -456,9 +449,10 @@ elif st.session_state.current_step == 6:
                 st.session_state.responses[f"Задание 6: Картина {image_names[1]}"] = answer2
                 st.session_state.responses[f"Задание 6: Картина {image_names[2]}"] = answer3
                 st.rerun()
+            else:
+                st.warning("Выберите глагол для каждой картинки!")
 
         func.skip_task(st, index * 3, answ_co * 3, "Задание 6: ")
-
     else:
         st.header("Задание 4.2 завершено!")
         if st.button("Перейти к следующему заданию"):
