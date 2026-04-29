@@ -45,8 +45,8 @@ def create_task5_html(prime_text, stimulus_text, hint, audio_base64=None, audio_
                 margin:5px 0;
                 font-size:1.2em;
             ">
-                <div style="padding-right:50px;">{ans}</div>
-                <button onclick="event.stopPropagation(); playAnswerAudio({i})"
+                <span>{ans}</span>
+                <button onclick="playAnswerAudio({i})"
                     style="
                         position:absolute;
                         top:8px;
@@ -118,7 +118,7 @@ def create_task5_html(prime_text, stimulus_text, hint, audio_base64=None, audio_
         </div>
     </div>
 
-    <div>
+    <div style="margin-top:10px;">
         {answers_html}
     </div>
 
@@ -209,11 +209,13 @@ elif st.session_state.current_step == 2:  # Тренировочные стим�
         )
 
         # Варианты ответов в виде кнопок
-        choice = None
-        for i, answer in enumerate(task5_test["answers"]):
-            unique_id = hashlib.md5(f"test_{index}_{i}_{answer}".encode()).hexdigest()[:8]
-            if st.button(answer, key=f"q5_test_{index}_{i}_{unique_id}"):
-                choice = answer
+        choice = st.radio(
+            "Выберите ответ:",
+            task5_test["answers"],
+            key=f"q5_test_radio_{index}",
+            index=None,
+            horizontal=True
+        )
 
         if choice is not None:
             st.session_state.task5_test_index += 1  # Переход к следующему стимулу
@@ -270,15 +272,13 @@ elif st.session_state.current_step == 3:  # Основная часть зада
         )
         st.components.v1.html(html, height=250)
 
-        st.write("**Варианты ответа:**")
-        
-        choice = None
-        cols = st.columns(len(task5["answers"]))
-        for i, answer in enumerate(task5["answers"]):
-            with cols[i]:
-                unique_id = hashlib.md5(f"main_{index}_{i}_{answer}_{task5['stimulus_text']}".encode()).hexdigest()[:8]
-                if st.button(answer, key=f"q5_main_{index}_{i}_{unique_id}", use_container_width=True):
-                    choice = answer
+        choice = st.radio(
+            "Выберите ответ:",
+            task5["answers"],
+            key=f"q5_radio_{index}",
+            index=None,
+            horizontal=True
+        )
 
         if choice is not None:
             st.session_state.responses[f"Задание 5: {task5['stimulus_text']}"] = choice
