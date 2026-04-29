@@ -70,15 +70,20 @@ if "q1_index" not in st.session_state: #added
 if "responses" not in st.session_state:
     st.session_state.responses = {}
 if "gender_easy_selected" not in st.session_state:
-    st.session_state.gender_easy_selected = None
+    st.session_state.gender_easy_selected, _ = get_balanced_sample(task_data.gender_easy, 40)
 if "gender_middle_selected" not in st.session_state:
-    st.session_state.gender_middle_selected = None
+    selected, _ = get_balanced_sample(
+        [(task_data.gender_middle_minus[i], task_data.gender_middle_minus_opt[i]) 
+         for i in range(len(task_data.gender_middle_minus))], 15)
+    st.session_state.gender_middle_selected = selected
 if "gender_middle_plus_selected" not in st.session_state:
-    st.session_state.gender_middle_plus_selected = None
-if "gender_middle_plus_opt_selected" not in st.session_state:
-    st.session_state.gender_middle_plus_opt_selected = None
+    selected_items, selected_indices = get_balanced_sample(task_data.gender_middle_plus, 40)
+    st.session_state.gender_middle_plus_selected = selected_items
+    st.session_state.gender_middle_plus_opt_selected = [task_data.gender_middle_plus_opt[i] for i in selected_indices]
 if "gender_complex_selected" not in st.session_state:
-    st.session_state.gender_complex_selected = None
+    indices = list(range(len(task_data.gender_complex)))
+    random.shuffle(indices)
+    st.session_state.gender_complex_selected = [task_data.gender_complex[i] for i in indices[:40]]
     
 st.title("ТИГР: тренируемся изучать грамматику")
 
