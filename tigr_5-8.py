@@ -694,7 +694,7 @@ elif st.session_state.current_step == 8:
         st.header("Тренировка задания 4.3")
         st.write("Выберите правильную форму глагола")
         # Отображаем тестовый стимул
-        html = create_task7_html(st.session_state.gender_middle_plus_selected[index])
+        html = create_task7_html(task_data.gender_middle_plus_test[index])
         st.components.v1.html(html, height=150)
         
         # Стилизация кнопок
