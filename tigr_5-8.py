@@ -3,8 +3,6 @@ import streamlit as st
 from datetime import datetime
 import os
 import task_data
-import importlib
-importlib.reload(task_data)
 import func
 import base64
 import streamlit.components.v1 as components
