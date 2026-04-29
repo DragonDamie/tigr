@@ -69,7 +69,17 @@ if "q1_index" not in st.session_state: #added
 
 if "responses" not in st.session_state:
     st.session_state.responses = {}
-
+if "gender_easy_selected" not in st.session_state:
+    st.session_state.gender_easy_selected = None
+if "gender_middle_selected" not in st.session_state:
+    st.session_state.gender_middle_selected = None
+if "gender_middle_plus_selected" not in st.session_state:
+    st.session_state.gender_middle_plus_selected = None
+if "gender_middle_plus_opt_selected" not in st.session_state:
+    st.session_state.gender_middle_plus_opt_selected = None
+if "gender_complex_selected" not in st.session_state:
+    st.session_state.gender_complex_selected = None
+    
 st.title("ТИГР: тренируемся изучать грамматику")
 
 if st.session_state.current_step == 0:
