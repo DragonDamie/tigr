@@ -22,6 +22,11 @@ if "responses" not in st.session_state:
 
 st.title("ТИГР: тренируемся изучать грамматику")
 
+if st.button("🔄 Сбросить ответы задания 6"):
+    st.session_state.responses = {k: v for k, v in st.session_state.responses.items() if not k.startswith("Задание 6")}
+    st.session_state.current_step = 6
+    st.rerun()
+
 if st.session_state.current_step == 0:
     st.header("Добро пожаловать в тест!")
     st.write("В этом тесте вам предстоит выполнить несколько заданий.")
