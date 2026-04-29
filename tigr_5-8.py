@@ -7,6 +7,7 @@ import func
 import base64
 import streamlit.components.v1 as components
 import hashlib
+import random
 #os.chdir(os.path.dirname(__file__))  # рабочая директория
 
 
@@ -492,7 +493,7 @@ elif st.session_state.current_step == 6:
     if index < answ_co:
         st.header("Задание 4.2")
         st.write("Нажмите 🔊 чтобы прослушать глагол. Выберите правильный ответ в кружочках ниже.")
-
+        
         st.markdown("""
             <style>
                 .stImage img {
@@ -503,35 +504,51 @@ elif st.session_state.current_step == 6:
                 .stRadio label {
                     font-size: 22px !important;
                 }
-                button {
-                    font-size: 18px !important;
-                }
             </style>
         """, unsafe_allow_html=True)
         
         image_names = task_data.gender_middle_minus[index]
         verbs = task_data.gender_middle_minus_opt[index]
         verbs = [v for v in verbs if v != ""]
+        
+        # Перемешиваем картинки и запоминаем порядок
+        if f"shuffle_{index}" not in st.session_state:
+            indices = list(range(3))
+            random.shuffle(indices)
+            st.session_state[f"shuffle_{index}"] = indices
+        else:
+            indices = st.session_state[f"shuffle_{index}"]
+        
+        shuffled_images = [image_names[i] for i in indices]
 
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            st.image(f"images/{image_names[0]}", use_container_width=True)
+            st.image(f"images/{shuffled_images[0]}", use_container_width=True)
             answer1 = create_task6_audio_buttons(verbs, "col1", f"verb_1_{index}")
             
         with col2:
-            st.image(f"images/{image_names[1]}", use_container_width=True)
+            st.image(f"images/{shuffled_images[1]}", use_container_width=True)
             answer2 = create_task6_audio_buttons(verbs, "col2", f"verb_2_{index}")
             
         with col3:
-            st.image(f"images/{image_names[2]}", use_container_width=True)
+            st.image(f"images/{shuffled_images[2]}", use_container_width=True)
             answer3 = create_task6_audio_buttons(verbs, "col3", f"verb_3_{index}")
 
         if st.button("Далее"):
             if answer1 is not None and answer2 is not None and answer3 is not None:
-                st.session_state.responses[f"Задание 6: Картина {image_names[0]}"] = answer1
-                st.session_state.responses[f"Задание 6: Картина {image_names[1]}"] = answer2
-                st.session_state.responses[f"Задание 6: Картина {image_names[2]}"] = answer3
+                # Сохраняем ответы в правильном порядке (ж, м, мн)
+                answers = [None, None, None]
+                answers[indices[0]] = answer1
+                answers[indices[1]] = answer2
+                answers[indices[2]] = answer3
+                
+                st.session_state.responses[f"Задание 6: Картина {image_names[0]}"] = answers[0]
+                st.session_state.responses[f"Задание 6: Картина {image_names[1]}"] = answers[1]
+                st.session_state.responses[f"Задание 6: Картина {image_names[2]}"] = answers[2]
+                
+                # Удаляем сохранённый порядок
+                del st.session_state[f"shuffle_{index}"]
                 st.rerun()
             else:
                 st.warning("Выберите глагол для каждой картинки!")
