@@ -321,9 +321,13 @@ elif st.session_state.current_step == 3:  # Основная часть зада
         )
         st.components.v1.html(html, height=400)
 
+        # Перемешиваем варианты ответов
+        answers_list = list(task5["answers"])
+        random.shuffle(answers_list)
+        
         choice = st.radio(
             "Выберите ответ:",
-            task5["answers"],
+            answers_list,
             key=f"q5_radio_{index}",
             index=None,
             horizontal=True
@@ -787,9 +791,12 @@ elif st.session_state.current_step == 9:
             unsafe_allow_html=True,
         )
         
-        # Варианты ответов
+        # Перемешиваем варианты ответов
+        answers_list = list(st.session_state.gender_middle_plus_opt_selected[index])
+        random.shuffle(answers_list)
+        
         choice = None
-        for answer in st.session_state.gender_middle_plus_opt_selected[index]:
+        for answer in answers_list:
             if st.button(answer, key=f"q7_{index}_{answer}"):
                 choice = answer
         
