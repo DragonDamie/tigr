@@ -890,11 +890,11 @@ elif st.session_state.current_step == 11:  # Страница с трениро�
 
 elif st.session_state.current_step == 12:  # Задание 8 (ввод ответа)
     index = len([k for k in st.session_state.responses.keys() if k.startswith("Задание 8")])
-    answ_co = len(task_data.gender_complex)
+    answ_co = len(st.session_state.gender_complex_selected)
     if index < answ_co:
         st.header("Задание 4.4")
         # Создаем HTML с новым дизайном
-        html = create_task8_html(task_data.gender_complex[index])
+        html = create_task8_html(st.session_state.gender_complex_selected[index])
         st.components.v1.html(html, height=150)
 
         # Поле для ввода ответа
@@ -904,7 +904,7 @@ elif st.session_state.current_step == 12:  # Задание 8 (ввод отве
         )
 
         if st.button("Далее") and answer:
-            st.session_state.responses[f"Задание 8: {task_data.gender_complex[index]}"] = answer
+            st.session_state.responses[f"Задание 8: {st.session_state.gender_complex_selected[index]}"] = answer
             st.rerun()
 
         func.skip_task(st, index, answ_co, "Задание 8: ") #пропуск задания
