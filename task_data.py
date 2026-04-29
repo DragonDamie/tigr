@@ -1524,7 +1524,7 @@ gender_easy = [
         "prime_text": "Мальчик повесил картину",
         "stimulus_text": "Пешеход __ дорогу на красный свет",
         "answers": ('переходил', 'переходили'),
-        "audio_answers": ('perehodil.mp3', 'perehodili.mp3'),
+        "audio_answers": ('perekhodil.mp3', 'perekhodili.mp3'),
         "hint": "Что делал?",
         "audio": "4_1_1_114.mp3",
     },
