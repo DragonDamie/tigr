@@ -38,16 +38,13 @@ def create_task5_html(prime_text, stimulus_text, hint, audio_base64=None, audio_
             answers_html += f"""
             <div style="
                 position:relative;
-                background-color:#ffebcc;
-                border:2px solid orange;
+                background-color:#e8e8e8;
+                border:1px solid #ccc;
                 padding:15px;
                 width:80%;
                 margin:5px 0;
                 font-size:1.2em;
-                cursor:pointer; >
-
-                <div>{ans}</div>
-
+            ">
                 <button onclick="event.stopPropagation(); playAnswerAudio({i})"
                     style="
                         position:absolute;
@@ -114,7 +111,6 @@ def create_task5_html(prime_text, stimulus_text, hint, audio_base64=None, audio_
         <div class="example">
             <strong>Образец:</strong> {prime_text}
         </div>
-
         <div class="task">
             {stimulus_text}
             <button class="audio-btn" onclick="playAudio()">🔊</button>
@@ -142,14 +138,6 @@ def create_task5_html(prime_text, stimulus_text, hint, audio_base64=None, audio_
             audio.currentTime = 0;
             audio.play();
         }}
-
-        window.onload = function() {{
-            var audio = document.getElementById("audio");
-            audio.play().catch(() => {{}});
-        }}
-        function selectAnswer(answer) {{
-    console.log("Selected:", answer);
-}}
     </script>
     """
 
@@ -224,8 +212,8 @@ elif st.session_state.current_step == 2:  # Тренировочные стим�
         choice = None
         for i, answer in enumerate(task5_test["answers"]):
             unique_id = hashlib.md5(f"test_{index}_{i}_{answer}".encode()).hexdigest()[:8]
-        if st.button(answer, key=f"q5_test_{index}_{i}_{unique_id}"):
-            choice = answer
+            if st.button(answer, key=f"q5_test_{index}_{i}_{unique_id}"):
+                choice = answer
 
         if choice is not None:
             st.session_state.task5_test_index += 1  # Переход к следующему стимулу
@@ -245,31 +233,33 @@ elif st.session_state.current_step == 3:  # Основная часть зада
         st.write("Выберите правильный глагол с опорой на предложение-образец")
         task5 = task_data.gender_easy[index]
         audio_path = f"audio/task5/{task5['audio']}"
-        # проверяем новое ли задание
+        
         if "last_audio" not in st.session_state:
             st.session_state.last_audio = None
 
-        # если задание новое — проигрываем аудио
         if "audio_base64" not in st.session_state:
             st.session_state.audio_base64 = None
 
         if st.session_state.last_audio != task5["audio"]:
-
-            with open(audio_path, "rb") as f:
-                audio_bytes = f.read()
-
-            st.session_state.audio_base64 = base64.b64encode(audio_bytes).decode()
-            st.session_state.last_audio = task5["audio"]
+            if os.path.exists(audio_path):
+                with open(audio_path, "rb") as f:
+                    audio_bytes = f.read()
+                st.session_state.audio_base64 = base64.b64encode(audio_bytes).decode()
+                st.session_state.last_audio = task5["audio"]
+            else:
+                st.session_state.audio_base64 = None
 
         audio_base64 = st.session_state.audio_base64
         audio_answers_base64 = []
 
         for audio_file in task5.get("audio_answers", []):
             path = f"audio/task5/{audio_file}"
-            with open(path, "rb") as f:
-                audio_answers_base64.append(base64.b64encode(f.read()).decode())
+            if os.path.exists(path):
+                with open(path, "rb") as f:
+                    audio_answers_base64.append(base64.b64encode(f.read()).decode())
+            else:
+                audio_answers_base64.append("")
         
-        # Создаем HTML с новым дизайном
         html = create_task5_html(
             task5["prime_text"],
             task5["stimulus_text"],
@@ -278,46 +268,23 @@ elif st.session_state.current_step == 3:  # Основная часть зада
             audio_answers_base64,
             task5["answers"]
         )
-        st.components.v1.html(html, height=300)
+        st.components.v1.html(html, height=250)
 
-        # Стилизация кнопок
-        st.markdown(
-            """
-            <style>
-                .stButton > button {
-                    background-color: #ffebcc;
-                    border: 2px solid orange;
-                    padding: 10px;
-                    border-radius: 5px;
-
-                    width: 100%;
-                    white-space: nowrap;
-
-                    text-align: left;
-                    cursor: pointer;
-                    margin: 5px 0;
-                    font-size: 1.2em;
-                }
-                .stButton > button:hover {
-                    background-color: #ffd699;
-                }
-            </style>
-            """,
-            unsafe_allow_html=True,
-        )
-
-        # Варианты ответов в виде кнопок
+        st.write("**Варианты ответа:**")
+        
         choice = None
+        cols = st.columns(len(task5["answers"]))
         for i, answer in enumerate(task5["answers"]):
-            unique_id = hashlib.md5(f"{index}_{i}_{answer}_{task5['stimulus_text']}".encode()).hexdigest()[:8]
-        if st.button(answer, key=f"q5_{index}_{i}_{unique_id}"):
-            choice = answer
+            with cols[i]:
+                unique_id = hashlib.md5(f"main_{index}_{i}_{answer}_{task5['stimulus_text']}".encode()).hexdigest()[:8]
+                if st.button(answer, key=f"q5_main_{index}_{i}_{unique_id}", use_container_width=True):
+                    choice = answer
 
         if choice is not None:
             st.session_state.responses[f"Задание 5: {task5['stimulus_text']}"] = choice
             st.rerun()
 
-        func.skip_task(st, index, answ_co, "Задание 5: ") #пропуск задания
+        func.skip_task(st, index, answ_co, "Задание 5: ")
 
     else:
         st.header("Задание 4.1 завершено!")
