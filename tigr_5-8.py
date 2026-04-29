@@ -38,14 +38,14 @@ def create_task5_html(prime_text, stimulus_text, hint, audio_base64=None, audio_
             answers_html += f"""
             <div style="
                 position:relative;
-                background-color:#e8e8e8;
-                border:1px solid #ccc;
+                background-color:#ffebcc;
+                border:2px solid orange;
                 padding:15px;
                 width:80%;
                 margin:5px 0;
                 font-size:1.2em;
             ">
-                <div style="margin-right:40px;">{ans}</div>
+                <div style="padding-right:50px;">{ans}</div>
                 <button onclick="event.stopPropagation(); playAnswerAudio({i})"
                     style="
                         position:absolute;
@@ -60,12 +60,11 @@ def create_task5_html(prime_text, stimulus_text, hint, audio_base64=None, audio_
                     ">
                     🔊
                 </button>
-
                 <audio id="audio_answer_{i}">
                     <source src="data:audio/mp3;base64,{audio}" type="audio/mp3">
                 </audio>
             </div>
-        """
+            """
 
     html = f"""
     <style>
